@@ -112,6 +112,27 @@ d3.json("http://localhost:8080/censusstats/data/state.json", function(error, jso
       //  .on('mouseover', tip.show)
       //  .on('mouseout', tip.hide);
 
+      state.selectAll("rect")
+		.on("mouseover", function(d){
+         var xPos = parseFloat(d3.select(this).attr("x"));
+         var yPos = parseFloat(d3.select(this).attr("y"));
+         var height = parseFloat(d3.select(this).attr("height"))
+
+         d3.select(this).attr("stroke","green").attr("stroke-width",3);
+         console.log(d.value);
+         console.log("x: " + xPos + ", y: "+ yPos + ", height: "+ height/2);
+         svg.append("text")
+            .attr("x", xPos)
+            .attr("y",yPos + height/2)
+            .attr("class","tooltip")
+            .text(d.value);
+		})
+		.on("mouseout",function(){
+			svg.select(".tooltip").remove();
+			d3.select(this).attr("stroke","pink").attr("stroke-width",0.2);
+
+		})
+
     var legend = svg.selectAll(".legend")
        .data(seriesNames.slice())
        .enter().append("g")
@@ -119,13 +140,13 @@ d3.json("http://localhost:8080/censusstats/data/state.json", function(error, jso
        .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
 
     legend.append("rect")
-       .attr("x", width - 18)
+       .attr("x", width - 200)
        .attr("width", 18)
        .attr("height", 18)
        .style("fill", color);
 
     legend.append("text")
-       .attr("x", width - 24)
+       .attr("x", width - 206)
        .attr("y", 9)
        .attr("dy", ".35em")
        .style("text-anchor", "end")
@@ -157,7 +178,7 @@ function plotTotalPopulationGraph(data, containerName) {
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append('g')
-      .attr("transform", "translate(" + radius + "," + radius + ")");
+      .attr("transform", "translate(" + (radius * 2) + "," + radius + ")");
 
    // declare an arc generator function
    var arc = d3.svg.arc()
@@ -167,7 +188,6 @@ function plotTotalPopulationGraph(data, containerName) {
    var pie = d3.layout.pie()
       .value(function(d) {return d.value});
 
-   console.log(pie(pieData));
 
    var arcs = svg.selectAll('.arc')
       .data(pie(pieData))
@@ -179,13 +199,40 @@ function plotTotalPopulationGraph(data, containerName) {
       .attr("d", arc)
       .attr("fill", function(d) { return color(d.value);});
 
+   var total = 0;
+   total += d3.sum(data,function(d) { return parseInt(d.IlliterateMale) + parseInt(d.LiterateFemale) +
+            parseInt(d.LiterateMale) + parseInt(d.LiterateFemale); });
+
    arcs.append("text")
       .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"})
+      .attr("class","pieText")
       .attr("text-anchor", "middle")
-      .text(function(d) { return d.data.label;});
+      .text(function(d) {
+         //make lable with percentage
+         var percent = d3.format("%");
+         var pValue = percent(d.data.value/total);
+          return d.data.label + " - " +pValue.toString();
+       });
 
-   // var total = 0;
-   // total += d3.sum(data,function(d) { return parseInt(d.IlliterateMale) + parseInt(d.LiterateFemale) +
-   //          parseInt(d.LiterateMale) + parseInt(d.LiterateFemale); });
+      //  console.log( d3.entries(pieData,(function(d) { return d.data.label})));
+       //adding legends
+      //  var legend = svg.selectAll(".legend")
+      //     .data(d3.map(function(d) { d.data.label}))
+      //     .enter().append("g")
+      //     .attr("class", "legend")
+      //     .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
+       //
+      //  legend.append("rect")
+      //     .attr("x", width - 18)
+      //     .attr("width", 18)
+      //     .attr("height", 18)
+      //     .style("fill", color);
+       //
+      //  legend.append("text")
+      //     .attr("x", width - 24)
+      //     .attr("y", 9)
+      //     .attr("dy", ".35em")
+      //     .style("text-anchor", "end")
+      //     .text(function (d) { return d.data.label; })
 
 }
