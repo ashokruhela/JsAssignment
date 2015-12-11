@@ -14,8 +14,8 @@ var x1 = d3.scale.ordinal();
 var y = d3.scale.linear()
   .range([height, 0]);
 
-var color = d3.scale.ordinal()
-   .range(["red", "blue", "#98abc5", "#8a89a6", "#7b6888", "#d0743c", "#ff8c00"]);
+var color = d3.scale.ordinal().range(["#FFD800", "#587058", "#587498", "#E86850"]);
+//var color = d3.scale.ordinal().range(["red", "blue", "#98abc5", "#8a89a6", "#7b6888", "#d0743c", "#ff8c00"]);
 
   //  Set up the xAxis to use our x0 scale and be oriented on the bottom.
 var xAxis = d3.svg.axis()
@@ -30,6 +30,7 @@ var yAxis = d3.svg.axis()
 
 
 //svg.call(tip);
+//http://ec2-54-251-140-208.ap-southeast-1.compute.amazonaws.com/~ashok.kumar6/CensusStats/data/
 d3.json("http://localhost:8080/JsAssignment/CensusStats/data/all.json", function(error, json) {
     if (error) return console.warn(error);
     data = json;
