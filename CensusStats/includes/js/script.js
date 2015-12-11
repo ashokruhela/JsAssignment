@@ -126,6 +126,7 @@ d3.json("http://localhost:8080/JsAssignment/CensusStats/data/state.json", functi
             .attr("y",yPos + height/2)
             .attr("class","tooltip")
             .text(d.value);
+            console.log(this);
 		})
 		.on("mouseout",function(){
 			svg.select(".tooltip").remove();
