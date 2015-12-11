@@ -30,21 +30,21 @@ var yAxis = d3.svg.axis()
 
 
 //svg.call(tip);
-d3.json("http://localhost:8080/censusstats/data/all.json", function(error, json) {
+d3.json("http://localhost:8080/JsAssignment/CensusStats/data/all.json", function(error, json) {
     if (error) return console.warn(error);
     data = json;
     //console.log(json);
     plotTotalPopulationGraph(json, ".all");
   });
 
-d3.json("http://localhost:8080/censusstats/data/state.json", function(error, json) {
+d3.json("http://localhost:8080/JsAssignment/CensusStats/data/state.json", function(error, json) {
    if (error) return console.warn(error);
    data = json;
    //console.log(json);
    plotStateGraph(json, ".chart");
  });
 
- d3.json("http://localhost:8080/censusstats/data/northEast.json", function(error, json) {
+ d3.json("http://localhost:8080/JsAssignment/CensusStats/data/northEast.json", function(error, json) {
     if (error) return console.warn(error);
     data = json;
     //console.log(json);
@@ -169,8 +169,7 @@ function plotTotalPopulationGraph(data, containerName) {
    var radius = height/2;
 
    //using d3 built-in color scale
-   var color = d3.scale.ordinal()
-      .range(["red", "yellow", "blue", "orange"]);
+   var color = d3.scale.ordinal().range(["#462066", "#FFB85F", "#FF7A5A", "#00AAA0"]);
 
    //var color = d3.scale.category20b();
 
@@ -211,28 +210,32 @@ function plotTotalPopulationGraph(data, containerName) {
          //make lable with percentage
          var percent = d3.format("%");
          var pValue = percent(d.data.value/total);
-          return d.data.label + " - " +pValue.toString();
+          return pValue.toString();
        });
 
-      //  console.log( d3.entries(pieData,(function(d) { return d.data.label})));
+      var names = [];
+      for(j =0;j<pieData.length;j++){
+         names.push(pieData[j].label);
+      }
+      console.log(names);
        //adding legends
-      //  var legend = svg.selectAll(".legend")
-      //     .data(d3.map(function(d) { d.data.label}))
-      //     .enter().append("g")
-      //     .attr("class", "legend")
-      //     .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
-       //
-      //  legend.append("rect")
-      //     .attr("x", width - 18)
-      //     .attr("width", 18)
-      //     .attr("height", 18)
-      //     .style("fill", color);
-       //
-      //  legend.append("text")
-      //     .attr("x", width - 24)
-      //     .attr("y", 9)
-      //     .attr("dy", ".35em")
-      //     .style("text-anchor", "end")
-      //     .text(function (d) { return d.data.label; })
+       var legend = svg.selectAll(".legend")
+          .data(names)
+          .enter().append("g")
+          .attr("class", "legend")
+          .attr("transform", function (d, i) { return "translate(0," + i * 20 + ")"; });
+
+       legend.append("rect")
+          .attr("x", 400)
+          .attr("width", 18)
+          .attr("height", 18)
+          .style("fill", color);
+
+       legend.append("text")
+          .attr("x", 390)
+          .attr("y", 9)
+          .attr("dy", ".35em")
+          .style("text-anchor", "end")
+          .text(function (d) { return d; })
 
 }
